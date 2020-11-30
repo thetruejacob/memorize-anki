@@ -47,10 +47,10 @@ def reprocess(card):
         # card is already due
         card.queue = QUEUE_TYPE_REV
         card.type = CARD_TYPE_REV
-        showInfo(f"This card is overdue. The next interval will be {card.ivl}")
-        card.ivl = self.today  # set to something else? Originally card.ivl = ivlInHour
+        # showInfo(f"This card is overdue. The next interval will be {card.ivl}")
+        card.ivl = int(ivlInHour)
         # TODO: find real day  # Originally card.due = self.today
-        card.due = card.col.sched.today
+        card.due = int(card.col.sched.today)
         # showInfo(f"Setting its due date to today since already due.")
         return
 
@@ -58,7 +58,7 @@ def reprocess(card):
         # more than 2 day. We can average and set to review
         card.queue = QUEUE_TYPE_REV
         card.type = CARD_TYPE_REV
-        card.due = card.col.sched.today + remainingIntervalInDay
+        card.due = int(card.col.sched.today + remainingIntervalInDay)
         card.ivl = ivlInDay
         # showInfo(f"Setting its due date to the day {card.due}, in {remainingIntervalInDay} days.")
         return
@@ -66,7 +66,7 @@ def reprocess(card):
     # at most 2 day. Stay in learning mode.
     card.queue = QUEUE_TYPE_LRN
     card.type = CARD_TYPE_LRN
-    card.due = round(nextReviewSecond)
+    card.due = int(round(nextReviewSecond))
     t = time.localtime(nextReviewSecond)
     # showInfo(f"Setting its due date to {card.due}, i.e. {time.strftime('%y.%m.%d %H:%M:%S', t)}.")
 
