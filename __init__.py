@@ -2,7 +2,6 @@ from anki.collection import _Collection
 from anki.sched import Scheduler
 from anki.schedv2 import Scheduler as SchedulerV2
 from anki.cards import Card
-from anki.utils import fmtTimeSpan
 from aqt.qt import *
 from aqt import mw
 
@@ -39,7 +38,7 @@ def reprocess(card):
 
     remainingSecondsBeforeCutoff = col.sched.dayCutoff - currentSecond
     secondsSinceLastReview = currentSecond - lastReviewSecond
-    print(f"--------------\nCard {card.id} was last reviewed {fmtTimeSpan(secondsSinceLastReview)} ago. Its interval was {card.ivl}. Interval should be {fmtTimeSpan(ivlInSecond)}. I.e. in {fmtTimeSpan(remainingIntervalInSecond)}. ")
+    print(f"--------------\nCard {card.id} was last reviewed {col.format_timespan(secondsSinceLastReview)} ago. Its interval was {card.ivl}. Interval should be {col.format_timespan(ivlInSecond)}. I.e. in {col.format_timespan(remainingIntervalInSecond)}. ")
 
     if nextReviewSecond <= currentSecond:
         # card is already due
