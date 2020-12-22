@@ -24,8 +24,9 @@ oldFlush = Card.flush
 oldFlushSched = Card.flushSched
 
 def reprocess(card):
+    col = card.col
     currentSecond = time.time()
-    lastReviewSecond = card.col.db.scalar("SELECT id FROM revlog WHERE cid = ? ORDER BY id DESC", card.id) // 1000
+    lastReviewSecond = col.db.scalar("SELECT id FROM revlog WHERE cid = ? ORDER BY id DESC", card.id) // 1000
     ivlInHour = ResultsandTimes(card.id)
     ivlInDay = round(ivlInHour/24)
     ivlInSecond = ivlInHour * 3600
@@ -36,7 +37,7 @@ def reprocess(card):
     remainingIntervalInSecond = nextReviewSecond - currentSecond
     remainingIntervalInDay = round(remainingIntervalInSecond / (24 * 60 * 60))
 
-    remainingSecondsBeforeCutoff = card.col.sched.dayCutoff - currentSecond
+    remainingSecondsBeforeCutoff = col.sched.dayCutoff - currentSecond
     secondsSinceLastReview = currentSecond - lastReviewSecond
     print(f"--------------\nCard {card.id} was last reviewed {fmtTimeSpan(secondsSinceLastReview)} ago. Its interval was {card.ivl}. Interval should be {fmtTimeSpan(ivlInSecond)}. I.e. in {fmtTimeSpan(remainingIntervalInSecond)}. ")
 
@@ -46,7 +47,7 @@ def reprocess(card):
         card.type = CARD_TYPE_REV 
         # showInfo(f"This card is overdue. The next interval will be {card.ivl}")
         card.ivl = 1
-        card.due = card.col.sched.today # TODO: find real day  # Originally card.due = self.today
+        card.due = col.sched.today # TODO: find real day  # Originally card.due = self.today
         # showInfo(f"Setting its due date to today since already due.")
         return
 
@@ -54,7 +55,7 @@ def reprocess(card):
         # more than 2 day. We can average and set to review
         card.queue = QUEUE_TYPE_REV
         card.type = CARD_TYPE_REV
-        card.due = card.col.sched.today + remainingIntervalInDay
+        card.due = col.sched.today + remainingIntervalInDay
         card.ivl = ivlInDay
         # showInfo(f"Setting its due date to the day {card.due}, in {remainingIntervalInDay} days.")
         return
